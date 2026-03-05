@@ -1,5 +1,108 @@
+// ViewNotes.jsx
 import { useEffect, useState } from "react";
 
+// ----- Collaborator Form -----
+function AddCollaboratorForm({ noteId, onCollaboratorAdded }) {
+  const [userId, setUserId] = useState("");
+  const [permission, setPermission] = useState("view");
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Fetch all available users
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const res = await fetch("http://localhost:5000/api/users", {
+          credentials: "include",
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to fetch users");
+        }
+        const data = await res.json();
+        setUsers(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchUsers();
+  }, []);
+
+  async function handleAddCollaborator(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/notes/${noteId}/collaborators`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ userId, permission }),
+        }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to add collaborator");
+      }
+
+      const updatedNote = await res.json();
+      onCollaboratorAdded(updatedNote);
+      setUserId("");
+      setPermission("view");
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleAddCollaborator} className="p-2 border rounded mt-4">
+      <h4 className="font-semibold mb-2">Add Collaborator</h4>
+      {error && <p className="text-red-500 mb-2">{error}</p>}
+
+      <select
+        value={userId}
+        onChange={(e) => setUserId(e.target.value)}
+        className="border p-1 mr-2 rounded w-1/2"
+        required
+      >
+        <option value="">Select a user</option>
+        {users.map((user) => (
+          <option key={user._id} value={user._id}>
+            {user.name} ({user.email})
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={permission}
+        onChange={(e) => setPermission(e.target.value)}
+        className="border p-1 mr-2 rounded"
+      >
+        <option value="view">View</option>
+        <option value="edit">Edit</option>
+      </select>
+
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+        disabled={loading}
+      >
+        {loading ? "Adding..." : "Add"}
+      </button>
+    </form>
+  );
+}
+
+// ----- Main ViewNotes Component -----
 export default function ViewNotes() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +138,6 @@ export default function ViewNotes() {
     }
   }
 
-  // Delete a note
   async function handleDelete(noteId) {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
 
@@ -57,28 +159,23 @@ export default function ViewNotes() {
     }
   }
 
-  // Start editing
   function startEditing(note) {
     setEditingNoteId(note._id);
     setEditTitle(note.title);
     setEditContent(note.content);
   }
 
-  // Cancel editing
   function cancelEditing() {
     setEditingNoteId(null);
     setEditTitle("");
     setEditContent("");
   }
 
-  // Save edited note
   async function saveEdit(noteId) {
     try {
       const res = await fetch(`http://localhost:5000/api/notes/${noteId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ title: editTitle, content: editContent }),
       });
@@ -95,6 +192,10 @@ export default function ViewNotes() {
       console.error(err);
       alert(err.message);
     }
+  }
+
+  function handleCollaboratorAdded(updatedNote) {
+    setNotes(notes.map((n) => (n._id === updatedNote._id ? updatedNote : n)));
   }
 
   if (loading) return <p className="text-center mt-10">Loading notes...</p>;
@@ -121,7 +222,7 @@ export default function ViewNotes() {
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                   />
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mb-2">
                     <button
                       onClick={() => saveEdit(note._id)}
                       className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
@@ -143,7 +244,7 @@ export default function ViewNotes() {
                   <p className="text-sm text-gray-500 mb-2">
                     Permission: {note.permission}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mb-2">
                     <button
                       onClick={() => startEditing(note)}
                       className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 transition"
@@ -159,6 +260,12 @@ export default function ViewNotes() {
                   </div>
                 </>
               )}
+
+              {/* Add collaborator form below note content */}
+              <AddCollaboratorForm
+                noteId={note._id}
+                onCollaboratorAdded={handleCollaboratorAdded}
+              />
             </div>
           ))}
         </div>
