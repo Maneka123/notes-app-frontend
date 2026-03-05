@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Register() {
+export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: ""
   });
 
+  // Clear form and redirect if already logged in
   useEffect(() => {
+    setForm({ email: "", password: "" }); // clear any hot reload values
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/login");
+      navigate("/dashboard");
     }
   }, [navigate]);
 
@@ -23,7 +24,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/register", {
+      const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
@@ -31,11 +32,11 @@ export default function Register() {
       const data = await res.json();
 
       if (res.ok) {
-        alert("User registered successfully!");
-        setForm({ name: "", email: "", password: "" });
-        navigate("/login");
+        localStorage.setItem("token", data.token);
+        alert("Login successful!");
+        navigate("/dashboard");
       } else {
-        alert(data.error || "Registration failed");
+        alert(data.error || "Login failed");
       }
     } catch (err) {
       console.error(err);
@@ -50,18 +51,11 @@ export default function Register() {
         className="bg-white p-10 rounded-2xl shadow-2xl w-96 transform hover:scale-105 transition-transform duration-300"
         autoComplete="off"
       >
-        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Create Account</h2>
+        {/* Dummy hidden inputs to prevent autofill */}
+        <input type="text" name="fakeusernameremembered" style={{ display: "none" }} />
+        <input type="password" name="fakepasswordremembered" style={{ display: "none" }} />
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={form.name}
-          onChange={handleChange}
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
-          required
-          autoComplete="off"
-        />
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Login</h2>
 
         <input
           type="email"
@@ -69,9 +63,9 @@ export default function Register() {
           placeholder="Email Address"
           value={form.email}
           onChange={handleChange}
+          autoComplete="off"
           className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
           required
-          autoComplete="off"
         />
 
         <input
@@ -80,22 +74,22 @@ export default function Register() {
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
+          autoComplete="new-password"
           className="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition"
           required
-          autoComplete="new-password"
         />
 
         <button
           type="submit"
           className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold p-3 rounded-lg hover:from-pink-500 hover:to-purple-500 transition-colors duration-300 mb-4 shadow-md"
         >
-          Register
+          Login
         </button>
 
         <p className="text-center text-sm text-gray-500">
-          Already have an account?{" "}
-          <Link to="/login" className="text-purple-600 hover:underline">
-            Login here
+          Don't have an account?{" "}
+          <Link to="/register" className="text-purple-600 hover:underline">
+            Register here
           </Link>
         </p>
       </form>
