@@ -1,4 +1,3 @@
-// SharedNotes.jsx
 import { useEffect, useState } from "react";
 
 export default function SharedNotes() {
@@ -48,7 +47,7 @@ export default function SharedNotes() {
               <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
               <p className="text-gray-700 mb-2">{note.content}</p>
               <p className="text-sm text-gray-500">
-                Shared by: {note.owner?.name || "Unknown"}
+                Shared by: {note.sharedBy?.name || note.sharedBy?.username || "Unknown"}
               </p>
               <p className="text-sm text-gray-500">
                 Your permission: {note.permission}

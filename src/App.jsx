@@ -6,7 +6,7 @@ import LoginForm from "./components/LoginForm";
 import Homepage from "./components/Homepage";
 import Dashboard from "./components/Dashboard";
 import SharedNotes from "./components/SharedNotes";
-
+import SearchNotesPage from "./components/SearchNotes";
 function App() {
   return (
     <Router>
@@ -24,6 +24,7 @@ function App() {
 
         {/* Fallback */}
         <Route path="*" element={<Homepage />} />
+        <Route path="/search" element={<SearchNotesPage />} />
       </Routes>
     </Router>
   );

@@ -1,12 +1,13 @@
 import React from "react";
 
 const Nav = ({ setPage }) => {
-  const navItems = [
-    { name: "Create Note", page: "create-note", icon: "✏️" },
-    { name: "View Notes", page: "view-notes", icon: "📒" },
-    { name: "Shared With Me", page: "shared-with-me", icon: "🔗" },
-    { name: "Logout", page: "logout", icon: "🚪" },
-  ];
+ const navItems = [
+  { name: "Create Note", page: "create-note", icon: "✏️" },
+  { name: "View Notes", page: "view-notes", icon: "📒" },
+  { name: "Shared With Me", page: "shared-with-me", icon: "🔗" },
+  { name: "Search Notes", page: "search", icon: "🔍" }, // ✅ page = "search"
+  { name: "Logout", page: "logout", icon: "🚪" },
+];
 
   return (
     <aside className="bg-gray-900 text-white w-64 h-screen flex flex-col justify-between">

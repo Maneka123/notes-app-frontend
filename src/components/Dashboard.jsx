@@ -1,11 +1,12 @@
-// src/components/Dashboard.jsx
 import { useState, useEffect } from "react";
 import Nav from "./Nav";
 import Header from "./Header";
-import CreateNoteForm from "./createNoteForm";
+import CreateNoteForm from "./CreateNoteForm";
 import ViewNotes from "./viewNotes";
 import SharedNotes from "./SharedNotes";
 import AddCollaborators from "./AddCollaborators";
+import LiveSearchNotes from "./LiveSearchNotes.jsx";
+
 
 export default function Dashboard() {
   const [page, setPage] = useState("view-notes");
@@ -84,6 +85,12 @@ export default function Dashboard() {
                 <AddCollaborators />
               </div>
             )}
+            {page === "search" && (
+  <div className="bg-white shadow-md rounded-lg p-6">
+    <LiveSearchNotes />
+  </div>
+)}
+            
           </div>
         </main>
       </div>
