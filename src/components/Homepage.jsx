@@ -1,26 +1,43 @@
-// Homepage.jsx
+// src/components/Homepage.jsx
 import { Link } from "react-router-dom";
+//import HeroImage from "../assets/image.png"; // put a hero image in src/assets
 
 export default function Homepage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">Welcome to My Notes App</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 p-6">
+      
+      {/* Header with Hero Image */}
+      <header className="text-center mb-12">
+        <h1 className="text-5xl font-extrabold text-gray-800 mb-4">Welcome to My Notes App</h1>
+        <p className="text-lg text-gray-600 mb-6">
+          Organize, collaborate, and share your notes effortlessly
+        </p>
+       
+      </header>
 
-      <div className="flex gap-6">
+      {/* Buttons with Icons */}
+      <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md justify-center">
         <Link
           to="/login"
-          className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-lg"
+          className="flex items-center justify-center gap-3 flex-1 px-6 py-4 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition text-xl font-semibold"
         >
+          <span className="text-2xl">🔑</span>
           Login
         </Link>
 
         <Link
           to="/register"
-          className="px-6 py-3 bg-purple-500 text-white rounded hover:bg-purple-600 transition text-lg"
+          className="flex items-center justify-center gap-3 flex-1 px-6 py-4 bg-purple-600 text-white rounded-lg shadow-lg hover:bg-purple-700 transition text-xl font-semibold"
         >
+          <span className="text-2xl">📝</span>
           Register
         </Link>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-12 text-center text-gray-500 text-sm">
+        &copy; {new Date().getFullYear()} My Notes App. All rights reserved.
+      </footer>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // src/components/AddCollaborators.jsx
 import { useState } from "react";
-import AddCollaboratorForm from "./AddCollaboratorForm";
+import AddCollaboratorForm from "./AddCollaborators";
 
 export default function AddCollaborators() {
   const [noteId, setNoteId] = useState("");

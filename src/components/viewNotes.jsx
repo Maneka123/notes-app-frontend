@@ -1,4 +1,4 @@
-// ViewNotes.jsx
+// src/components/ViewNotes.jsx
 import { useEffect, useState } from "react";
 
 // ----- Collaborator Form -----
@@ -64,14 +64,17 @@ function AddCollaboratorForm({ noteId, onCollaboratorAdded }) {
   }
 
   return (
-    <form onSubmit={handleAddCollaborator} className="p-2 border rounded mt-4">
+    <form
+      onSubmit={handleAddCollaborator}
+      className="mt-4 p-3 border-t border-gray-300 flex flex-col gap-2"
+    >
       <h4 className="font-semibold mb-2">Add Collaborator</h4>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
       <select
         value={userId}
         onChange={(e) => setUserId(e.target.value)}
-        className="border p-1 mr-2 rounded w-1/2"
+        className="border p-2 rounded w-full"
         required
       >
         <option value="">Select a user</option>
@@ -85,7 +88,7 @@ function AddCollaboratorForm({ noteId, onCollaboratorAdded }) {
       <select
         value={permission}
         onChange={(e) => setPermission(e.target.value)}
-        className="border p-1 mr-2 rounded"
+        className="border p-2 rounded w-full"
       >
         <option value="view">View</option>
         <option value="edit">Edit</option>
@@ -93,10 +96,10 @@ function AddCollaboratorForm({ noteId, onCollaboratorAdded }) {
 
       <button
         type="submit"
-        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
         disabled={loading}
       >
-        {loading ? "Adding..." : "Add"}
+        {loading ? "Adding..." : "Add Collaborator"}
       </button>
     </form>
   );
@@ -110,6 +113,15 @@ export default function ViewNotes() {
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
+
+  const noteColors = [
+    "bg-pink-100",
+    "bg-green-100",
+    "bg-blue-100",
+    "bg-yellow-100",
+    "bg-purple-100",
+    "bg-indigo-100",
+  ];
 
   useEffect(() => {
     fetchNotes();
@@ -198,40 +210,43 @@ export default function ViewNotes() {
     setNotes(notes.map((n) => (n._id === updatedNote._id ? updatedNote : n)));
   }
 
-  if (loading) return <p className="text-center mt-10">Loading notes...</p>;
+  if (loading) return <p className="text-center mt-10 text-gray-500">Loading notes...</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   return (
-    <div className="max-w-4xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-6">My Notes</h2>
+    <div className="max-w-6xl mx-auto mt-10 px-4">
+      <h2 className="text-3xl font-bold mb-8 text-gray-800">My Notes</h2>
       {notes.length === 0 ? (
         <p className="text-gray-500">No notes found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {notes.map((note) => (
-            <div key={note._id} className="p-4 bg-white shadow-md rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {notes.map((note, index) => (
+            <div
+              key={note._id}
+              className={`p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-2xl border ${noteColors[index % noteColors.length]}`}
+            >
               {editingNoteId === note._id ? (
                 <>
                   <input
-                    className="w-full border px-2 py-1 mb-2 rounded"
+                    className="w-full border px-3 py-2 mb-3 rounded"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                   />
                   <textarea
-                    className="w-full border px-2 py-1 mb-2 rounded"
+                    className="w-full border px-3 py-2 mb-3 rounded"
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                   />
-                  <div className="flex gap-2 mb-2">
+                  <div className="flex gap-2 mb-3">
                     <button
                       onClick={() => saveEdit(note._id)}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
                     >
                       Save
                     </button>
                     <button
                       onClick={cancelEditing}
-                      className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500 transition"
+                      className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition"
                     >
                       Cancel
                     </button>
@@ -239,21 +254,19 @@ export default function ViewNotes() {
                 </>
               ) : (
                 <>
-                  <h3 className="text-xl font-semibold mb-2">{note.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2 text-gray-700">{note.title}</h3>
                   <p className="text-gray-700 mb-2">{note.content}</p>
-                  <p className="text-sm text-gray-500 mb-2">
-                    Permission: {note.permission}
-                  </p>
-                  <div className="flex gap-2 mb-2">
+                  <p className="text-sm text-gray-500 mb-3">Permission: {note.permission}</p>
+                  <div className="flex gap-2 mb-3">
                     <button
                       onClick={() => startEditing(note)}
-                      className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 transition"
+                      className="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500 transition"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(note._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
                     >
                       Delete
                     </button>
@@ -261,7 +274,6 @@ export default function ViewNotes() {
                 </>
               )}
 
-              {/* Add collaborator form below note content */}
               <AddCollaboratorForm
                 noteId={note._id}
                 onCollaboratorAdded={handleCollaboratorAdded}
