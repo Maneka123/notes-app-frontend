@@ -1,0 +1,20 @@
+001]project setup
+npm create vite@latest notes-frontend
+cd notes-frontend
+npm install
+
+002]
+npm install axios react -D tailwindcss
+
+003]create postcss.config.js
+
+004]create tailwind.config.js
+
+005]npm install react-router-dom
+
+006]important files : src/maincomponents folder
+
+007]App.jsx
+008]main.jsx
+
+009]git repo:https://github.com/Maneka123/notes-app-frontend.git
