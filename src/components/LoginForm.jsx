@@ -36,16 +36,24 @@ export default function LoginForm() {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
-      {message && <p className="mb-4 text-sm text-red-500">{message}</p>}
+      {message && (
+        <p className="mb-4 text-sm text-red-500">{message}</p>
+      )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        autoComplete="off" // <-- disable browser autocomplete
+      >
         <div>
           <label className="block font-semibold mb-1">Email</label>
           <input
             type="email"
+            name="email"
             className="w-full border px-3 py-2 rounded"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="off" // <-- disable autocomplete
             required
           />
         </div>
@@ -54,9 +62,11 @@ export default function LoginForm() {
           <label className="block font-semibold mb-1">Password</label>
           <input
             type="password"
+            name="password"
             className="w-full border px-3 py-2 rounded"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password" // <-- prevent browser from filling saved passwords
             required
           />
         </div>

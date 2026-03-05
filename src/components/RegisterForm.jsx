@@ -4,80 +4,83 @@ export default function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e) => {
+  async function handleRegister(e) {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
     try {
       const res = await fetch("http://localhost:5000/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Registration failed");
 
-      if (!res.ok) {
-        setMessage(data.error || "Registration failed");
-      } else {
-        setMessage("Registration successful! You can now log in.");
-        setName("");
-        setEmail("");
-        setPassword("");
-      }
+      setSuccess("Registration successful! You can now login.");
+      setName("");
+      setEmail("");
+      setPassword("");
     } catch (err) {
-      console.error(err);
-      setMessage("Server error");
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
-      {message && <p className="mb-4 text-sm text-red-500">{message}</p>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-semibold mb-1">Name</label>
-          <input
-            type="text"
-            className="w-full border px-3 py-2 rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Email</label>
-          <input
-            type="email"
-            className="w-full border px-3 py-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1">Password</label>
-          <input
-            type="password"
-            className="w-full border px-3 py-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
+    <div className="max-w-md mx-auto mt-20 p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+      {error && <p className="text-red-500 mb-2">{error}</p>}
+      {success && <p className="text-green-500 mb-2">{success}</p>}
+      <form
+        onSubmit={handleRegister}
+        className="flex flex-col gap-4"
+        autoComplete="off" // <-- disable browser autocomplete
+      >
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border p-2 rounded"
+          autoComplete="off" // <-- disable autocomplete
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border p-2 rounded"
+          autoComplete="off" // <-- disable autocomplete
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border p-2 rounded"
+          autoComplete="new-password" // <-- trick browser into not filling
+          required
+        />
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+          className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition"
+          disabled={loading}
         >
-          Register
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
