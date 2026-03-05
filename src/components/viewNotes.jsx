@@ -1,5 +1,7 @@
 // src/components/ViewNotes.jsx
 import { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 // ----- Collaborator Form -----
 function AddCollaboratorForm({ noteId, onCollaboratorAdded }) {
@@ -227,15 +229,18 @@ export default function ViewNotes() {
             >
               {editingNoteId === note._id ? (
                 <>
+                  {/* Edit Mode */}
                   <input
                     className="w-full border px-3 py-2 mb-3 rounded"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                   />
-                  <textarea
-                    className="w-full border px-3 py-2 mb-3 rounded"
+                  <ReactQuill
+                    theme="snow"
                     value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
+                    onChange={setEditContent}
+                    className="mb-3"
+                    style={{ minHeight: "150px" }}
                   />
                   <div className="flex gap-2 mb-3">
                     <button
@@ -254,8 +259,12 @@ export default function ViewNotes() {
                 </>
               ) : (
                 <>
+                  {/* View Mode */}
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">{note.title}</h3>
-                  <p className="text-gray-700 mb-2">{note.content}</p>
+                  <div
+                    className="text-gray-700 mb-2"
+                    dangerouslySetInnerHTML={{ __html: note.content }}
+                  />
                   <p className="text-sm text-gray-500 mb-3">Permission: {note.permission}</p>
                   <div className="flex gap-2 mb-3">
                     <button
