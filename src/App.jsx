@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CreateNoteForm from "./components/createNoteForm";
+import CreateNoteForm from "./components/CreateNoteForm";
 import ViewNotes from "./components/viewNotes";
 import RegisterForm from "./components/RegisterForm";
 import LoginForm from "./components/LoginForm";
