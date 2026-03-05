@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import DashboardPage from "./pages/Dashboard";
 
 function App() {
   const isAuthenticated = !!localStorage.getItem("token");
@@ -9,20 +7,13 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route
-          path="/register"
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />}
-        />
-        <Route
-          path="/login"
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />}
-        />
+        <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+        {/* Add your /login and /register routes here */}
         <Route
           path="/dashboard"
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />}
+          element={isAuthenticated ? <DashboardPage /> : <Navigate to="/login" replace />}
         />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
